@@ -17,7 +17,7 @@ export const createUser = async (input: User) => {
   }
 };
 
-export const me = async (id: number) => {
+export const me = async (id: string) => {
   try {
     const user = await prisma.user.findUnique({
       where: {

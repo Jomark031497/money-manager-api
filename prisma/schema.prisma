@@ -25,7 +25,7 @@ model User {
 
 model Wallet {
   id           String        @id @default(uuid())
-  name         String        @unique
+  name         String
   color        String?
   balance      Float         @default(0)
   createdAt    DateTime      @default(now())
@@ -33,7 +33,7 @@ model Wallet {
   transactions Transaction[]
 
   User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.VarChar(11)
+  userId String?
 
 
 
@@ -52,7 +52,7 @@ model Transaction {
   updatedAt     DateTime @updatedAt
 
   Wallet   Wallet? @relation(fields: [walletId], references: [id])
-  walletId String? @db.VarChar(11)
+  walletId String?
 
   @@index([id])
   @@map("transaction")
