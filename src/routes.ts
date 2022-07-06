@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import requireAuth from './middlewares/requireAuth';
 import validate from './middlewares/validate';
-import { transactionController, transactionSchema } from './transaction';
-import { userController, userSchema } from './user';
-import { walletController, walletSchema } from './wallet';
+import { transactionController, transactionSchema } from './domains/transaction';
+import { userController, userSchema } from './domains/user';
+import { walletController, walletSchema } from './domains/wallet';
 
 const router = Router();
 

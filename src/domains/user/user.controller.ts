@@ -1,8 +1,9 @@
 import { verify } from 'argon2';
 import { Request, Response } from 'express';
-import { omitPassword, userService } from '.';
-import logger from '../utils/logger';
-import prisma from '../utils/prisma';
+import { omitPassword, userSchema, userService } from '.';
+import logger from '../../utils/logger';
+import prisma from '../../utils/prisma';
+import { zParse } from '../../utils/zParse';
 
 type Error = {
   username?: string;
@@ -11,7 +12,7 @@ type Error = {
 };
 
 export const signUp = async (req: Request, res: Response) => {
-  const { username, email } = req.body;
+  const { username, email } = await zParse(userSchema.signUpSchema, req.body);
   const errors: Error = {};
 
   const usernameExists = await prisma.user.findUnique({ where: { username } });
@@ -23,9 +24,7 @@ export const signUp = async (req: Request, res: Response) => {
 
   try {
     const user = await userService.signUp(req.body);
-
     req.session.userId = user.id;
-
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
@@ -34,10 +33,9 @@ export const signUp = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password } = await zParse(userSchema.loginSchema, req.body);
 
   const user = await prisma.user.findUnique({ where: { username } });
-
   if (!user) return res.status(400).json({ error: 'invalid username/password' });
 
   const passwordMatched = await verify(user.password, password);
@@ -45,7 +43,6 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     req.session.userId = user.id;
-
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
@@ -58,9 +55,7 @@ export const me = async (req: Request, res: Response) => {
 
   try {
     const user = await userService.me(req.session.userId);
-
     if (!user) return res.status(401).json({ error: 'unauthorized' });
-
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);

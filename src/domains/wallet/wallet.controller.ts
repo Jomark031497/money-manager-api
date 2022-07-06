@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { walletService } from '.';
-import logger from '../utils/logger';
+import logger from '../../utils/logger';
 
 export const createWallet = async (req: Request, res: Response) => {
   try {

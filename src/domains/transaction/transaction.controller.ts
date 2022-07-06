@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { transactionService } from '.';
-import logger from '../utils/logger';
+import logger from '../../utils/logger';
 
 export const getWalletTransactions = async (_req: Request, res: Response) => {
   try {

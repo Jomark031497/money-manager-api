@@ -1,11 +1,15 @@
 import { Wallet } from '@prisma/client';
-import prisma from '../utils/prisma';
+import { ApiError } from '../../error/ApiError';
+import prisma from '../../utils/prisma';
 import walletsWithTotal, { WalletWithTotal } from './helpers/walletsWithTotal';
 
-export const createWallet = async (inputs: Wallet, userId: string): Promise<Wallet> => {
+export const createWallet = async (body: Wallet, userId: string): Promise<Wallet> => {
   try {
     const wallet = await prisma.wallet.create({
-      data: { ...inputs, userId },
+      data: {
+        ...body,
+        userId,
+      },
     });
     return wallet;
   } catch (error) {
@@ -27,9 +31,11 @@ export const getWallets = async (userId: string): Promise<WalletWithTotal> => {
 
 export const getWallet = async (id: string, userId: string): Promise<Wallet> => {
   try {
-    const wallet = await prisma.wallet.findFirstOrThrow({
+    const wallet = await prisma.wallet.findFirst({
       where: { id, userId },
     });
+
+    if (!wallet) throw new ApiError(404, 'wallet not found');
 
     return wallet;
   } catch (error) {
@@ -37,13 +43,12 @@ export const getWallet = async (id: string, userId: string): Promise<Wallet> => 
   }
 };
 
-export const updateWallet = async (id: string, inputs: Wallet): Promise<Wallet> => {
+export const updateWallet = async (id: string, body: Wallet): Promise<Wallet> => {
   try {
     const wallet = await prisma.wallet.update({
       where: { id },
-      data: { ...inputs },
+      data: { ...body },
     });
-
     return wallet;
   } catch (error) {
     throw new Error(error);

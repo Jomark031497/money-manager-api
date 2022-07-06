@@ -1,5 +1,5 @@
 import { Transaction } from '@prisma/client';
-import prisma from '../utils/prisma';
+import prisma from '../../utils/prisma';
 
 export const getWalletTransactions = async () => {
   try {
