@@ -3,5 +3,11 @@ import { z } from 'zod';
 export const createWalletSchema = z.object({
   name: z.string().min(2).max(60),
   balance: z.number().nonnegative(),
-  color: z.string().nullish(),
+  color: z.string().optional(),
+});
+
+export const updateWalletSchema = z.object({
+  name: z.string().min(2).max(60).optional(),
+  balance: z.number().nonnegative().optional(),
+  color: z.string().optional(),
 });

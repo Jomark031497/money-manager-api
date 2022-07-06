@@ -1,15 +1,10 @@
 import { Wallet } from '@prisma/client';
 import prisma from '../utils/prisma';
+import walletsWithTotal from './helpers/walletsWithTotal';
 
 export const createWallet = async (inputs: Wallet, userId: string) => {
   try {
-    const wallet = await prisma.wallet.create({
-      data: {
-        ...inputs,
-        userId,
-      },
-    });
-
+    const wallet = await prisma.wallet.create({ data: { ...inputs, userId } });
     return wallet;
   } catch (error) {
     throw new Error(error);
@@ -18,13 +13,9 @@ export const createWallet = async (inputs: Wallet, userId: string) => {
 
 export const getWallets = async (userId: string) => {
   try {
-    const wallets = await prisma.wallet.findMany({
-      where: {
-        userId,
-      },
-    });
+    const wallets = await prisma.wallet.findMany({ where: { userId } });
 
-    return wallets;
+    return walletsWithTotal(wallets);
   } catch (error) {
     throw new Error(error);
   }
@@ -36,8 +27,22 @@ export const getWallet = async (id: string) => {
       where: {
         id,
       },
-      include: {
-        transactions: true,
+    });
+
+    return wallet;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const updateWallet = async (id: string, inputs: Wallet) => {
+  try {
+    const wallet = await prisma.wallet.update({
+      where: {
+        id,
+      },
+      data: {
+        ...inputs,
       },
     });
 

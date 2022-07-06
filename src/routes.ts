@@ -17,7 +17,12 @@ router.post('/user/signUp', validate(userSchema.signUpSchema), userController.si
 // wallet routes
 router.get('/wallet/', requireAuth, walletController.getWallets);
 router.get('/wallet/:id', requireAuth, walletController.getWallet);
-
+router.put(
+  '/wallet/:id',
+  validate(walletSchema.updateWalletSchema),
+  requireAuth,
+  walletController.updateWallet
+);
 router.post(
   '/wallet/create',
   validate(walletSchema.createWalletSchema),
