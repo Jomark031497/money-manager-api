@@ -23,9 +23,6 @@ export const me = async (id: number) => {
       where: {
         id,
       },
-      include: {
-        tasks: true,
-      },
     });
 
     return user;
