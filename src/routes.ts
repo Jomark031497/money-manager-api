@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import requireAuth from './middlewares/requireAuth';
 import validate from './middlewares/validate';
-import { transactionSchema } from './transaction';
+import { transactionController, transactionSchema } from './transaction';
 import { userController, userSchema } from './user';
 import { walletController, walletSchema } from './wallet';
 
@@ -26,12 +26,11 @@ router.post(
 );
 
 // transaction routes
-router.get('/transaction/');
 router.post(
   '/transaction/create',
   validate(transactionSchema.createTransactionSchema),
   requireAuth,
-  walletController.createWallet
+  transactionController.createTransaction
 );
 
 export default router;

@@ -17,7 +17,7 @@ export const createTransaction = async (inputs: Transaction) => {
       data: {
         name: inputs.name,
         category: inputs.category,
-        transactionType: inputs.transactionType,
+        type: inputs.type,
         amount: inputs.amount,
         paymentMethod: inputs.paymentMethod,
         walletId: inputs.walletId,

@@ -32,9 +32,12 @@ export const getWallets = async (userId: string) => {
 
 export const getWallet = async (id: string) => {
   try {
-    const wallet = await prisma.user.findUnique({
+    const wallet = await prisma.wallet.findUnique({
       where: {
         id,
+      },
+      include: {
+        transactions: true,
       },
     });
 

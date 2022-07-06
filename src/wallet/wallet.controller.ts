@@ -26,7 +26,7 @@ export const getWallets = async (req: Request, res: Response) => {
 
 export const getWallet = async (req: Request, res: Response) => {
   try {
-    const wallet = await walletService.getWallet(req.params.id, req.session.userId!);
+    const wallet = await walletService.getWallet(req.params.id);
 
     return res.status(200).json(wallet);
   } catch (error) {
