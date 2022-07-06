@@ -3,7 +3,12 @@ import { Request, Response } from 'express';
 import { omitPassword, userService } from '.';
 import logger from '../utils/logger';
 import prisma from '../utils/prisma';
-import { Error } from './user.types';
+
+type Error = {
+  username?: string;
+  email?: string;
+  password?: string;
+};
 
 export const signUp = async (req: Request, res: Response) => {
   const { username, email } = req.body;
