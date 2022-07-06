@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import requireAuth from './middlewares/requireAuth';
 import validate from './middlewares/validate';
+import { transactionSchema } from './transaction';
 import { userController, userSchema } from './user';
 import { walletController, walletSchema } from './wallet';
 
@@ -15,9 +16,20 @@ router.post('/user/signUp', validate(userSchema.signUpSchema), userController.si
 
 // wallet routes
 router.get('/wallet/', requireAuth, walletController.getWallets);
+router.get('/wallet/:id', requireAuth, walletController.getWallet);
+
 router.post(
   '/wallet/create',
   validate(walletSchema.createWalletSchema),
+  requireAuth,
+  walletController.createWallet
+);
+
+// transaction routes
+router.get('/transaction/');
+router.post(
+  '/transaction/create',
+  validate(transactionSchema.createTransactionSchema),
   requireAuth,
   walletController.createWallet
 );

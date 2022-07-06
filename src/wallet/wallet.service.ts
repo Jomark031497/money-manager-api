@@ -29,3 +29,17 @@ export const getWallets = async (userId: string) => {
     throw new Error(error);
   }
 };
+
+export const getWallet = async (id: string) => {
+  try {
+    const wallet = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return wallet;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
