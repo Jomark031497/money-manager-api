@@ -7,6 +7,13 @@ import router from './routes';
 
 const app = express();
 
+declare module 'express-session' {
+  // eslint-disable-next-line no-unused-vars
+  interface SessionData {
+    userId: string;
+  }
+}
+
 const RedisStore = connectRedis(session);
 const redis = new Redis(<string>process.env.REDIS_URL);
 
