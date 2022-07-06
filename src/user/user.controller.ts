@@ -22,7 +22,7 @@ export const signUp = async (req: Request, res: Response) => {
   if (Object.keys(errors).length) return res.status(400).json(errors);
 
   try {
-    const user = await userService.createUser(req.body);
+    const user = await userService.signUp(req.body);
 
     req.session.userId = user.id;
 
@@ -38,10 +38,10 @@ export const login = async (req: Request, res: Response) => {
 
   const user = await prisma.user.findUnique({ where: { username } });
 
-  if (!user) return res.status(400).json({ error: 'user not found' });
+  if (!user) return res.status(400).json({ error: 'invalid username/password' });
 
   const passwordMatched = await verify(user.password, password);
-  if (!passwordMatched) return res.status(400).json({ error: 'user not found' });
+  if (!passwordMatched) return res.status(400).json({ error: 'invalid username/password' });
 
   try {
     req.session.userId = user.id;
@@ -83,8 +83,4 @@ export const logout = async (req: Request, res: Response) => {
     logger.error(error);
     return res.status(500).json({ error: 'something went wrong' });
   }
-};
-
-export const protectedRoute = async (_: Request, res: Response) => {
-  res.send('Hello I am protected');
 };

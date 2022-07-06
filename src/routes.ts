@@ -8,7 +8,6 @@ import { walletController, walletSchema } from './wallet';
 const router = Router();
 
 // user routes
-router.get('/user/protected', requireAuth, userController.protectedRoute); // test route
 router.get('/user/me', requireAuth, userController.me);
 router.get('/user/logout', requireAuth, userController.logout);
 router.post('/user/login', validate(userSchema.loginSchema), userController.login);

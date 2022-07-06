@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import { hash } from 'argon2';
 import prisma from '../utils/prisma';
 
-export const createUser = async (input: User) => {
+export const signUp = async (input: User) => {
   try {
     const user = await prisma.user.create({
       data: {
@@ -20,9 +20,7 @@ export const createUser = async (input: User) => {
 export const me = async (id: string) => {
   try {
     const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
     });
 
     return user;
