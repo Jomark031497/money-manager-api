@@ -11,10 +11,49 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   email     String   @unique
   username  String   @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  wallets   Wallet[]
+
+  @@index([id, email, username])
+  @@map("user")
+}
+
+model Wallet {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  color        String?
+  balance      Float         @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.VarChar(11)
+
+
+
+  @@index([id])
+  @@map("wallet")
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  name          String
+  type          String
+  amount        Float    @default(0)
+  category      String
+  paymentMethod String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  Wallet   Wallet? @relation(fields: [walletId], references: [id])
+  walletId String? @db.VarChar(11)
+
+  @@index([id])
+  @@map("transaction")
 }
