@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { walletService } from '.';
 import logger from '../../utils/logger';
 
@@ -22,13 +22,13 @@ export const getWallets = async (req: Request, res: Response) => {
   }
 };
 
-export const getWallet = async (req: Request, res: Response, next: NextFunction) => {
+export const getWallet = async (req: Request, res: Response) => {
   try {
     const wallet = await walletService.getWallet(req.params.id, req.session.userId!);
     return res.status(200).json(wallet);
   } catch (error) {
     logger.error(error);
-    return next(error);
+    return res.status(error.code).json(error.message);
   }
 };
 

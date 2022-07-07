@@ -31,15 +31,13 @@ export const getWallets = async (userId: string): Promise<WalletWithTotal> => {
 
 export const getWallet = async (id: string, userId: string): Promise<Wallet> => {
   try {
-    const wallet = await prisma.wallet.findFirst({
+    const wallet = await prisma.wallet.findFirstOrThrow({
       where: { id, userId },
     });
 
-    if (!wallet) throw new APIError(404, 'Wallet Not Found');
-
     return wallet;
   } catch (error) {
-    throw new Error(error);
+    throw APIError.notFound('Wallet not found');
   }
 };
 

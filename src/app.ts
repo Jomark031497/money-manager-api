@@ -4,7 +4,6 @@ import connectRedis from 'connect-redis';
 import cors from 'cors';
 import Redis from 'ioredis';
 import router from './routes';
-import { errorHandler } from './error/errorHandler';
 
 const app = express();
 
@@ -44,7 +43,5 @@ app.use(
 );
 
 app.use('/api', router);
-
-app.use(errorHandler);
 
 export default app;
