@@ -33,7 +33,7 @@ export const signUp = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { username, password } = await zParse(userSchema.loginSchema, req.body);
+  const { username, password } = req.body;
 
   const user = await prisma.user.findUnique({ where: { username } });
   if (!user) return res.status(400).json({ error: 'invalid username/password' });
@@ -59,7 +59,7 @@ export const me = async (req: Request, res: Response) => {
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return error;
   }
 };
 
@@ -76,6 +76,6 @@ export const logout = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true });
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    throw error;
   }
 };

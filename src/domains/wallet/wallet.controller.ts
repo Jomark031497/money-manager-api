@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { walletService } from '.';
 import logger from '../../utils/logger';
 
@@ -22,13 +22,13 @@ export const getWallets = async (req: Request, res: Response) => {
   }
 };
 
-export const getWallet = async (req: Request, res: Response) => {
+export const getWallet = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const wallet = await walletService.getWallet(req.params.id, req.session.userId!);
     return res.status(200).json(wallet);
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return next(error);
   }
 };
 
@@ -38,6 +38,6 @@ export const updateWallet = async (req: Request, res: Response) => {
     return res.status(200).json(wallet);
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return res.json({ error: 'something went wrong' });
   }
 };

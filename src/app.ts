@@ -4,6 +4,7 @@ import connectRedis from 'connect-redis';
 import cors from 'cors';
 import Redis from 'ioredis';
 import router from './routes';
+import { errorHandler } from './error/errorHandler';
 
 const app = express();
 
@@ -36,12 +37,14 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
+      // sameSite: 'lax',
+      // secure: true,
     },
   })
 );
 
 app.use('/api', router);
+
+app.use(errorHandler);
 
 export default app;

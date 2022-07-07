@@ -1,5 +1,5 @@
 import { Wallet } from '@prisma/client';
-import { ApiError } from '../../error/ApiError';
+import { APIError } from '../../error/ApiError';
 import prisma from '../../utils/prisma';
 import walletsWithTotal, { WalletWithTotal } from './helpers/walletsWithTotal';
 
@@ -35,7 +35,7 @@ export const getWallet = async (id: string, userId: string): Promise<Wallet> => 
       where: { id, userId },
     });
 
-    if (!wallet) throw new ApiError(404, 'wallet not found');
+    if (!wallet) throw new APIError(404, 'Wallet Not Found');
 
     return wallet;
   } catch (error) {

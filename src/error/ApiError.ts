@@ -1,22 +1,3 @@
-export class ApiError extends Error {
-  statusCode: number;
+import { BaseError } from './BaseError';
 
-  isOperational: boolean;
-
-  constructor(
-    statusCode: number,
-    message: string,
-    isOperational: boolean = true,
-    stack: string = ''
-  ) {
-    super(message);
-    this.message = message;
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-    if (stack) {
-      this.stack = stack;
-    } else {
-      Error.captureStackTrace(this, this.constructor);
-    }
-  }
-}
+export class APIError extends BaseError {}

@@ -19,9 +19,14 @@ export const signUp = async (body: User): Promise<User> => {
 
 export const me = async (id: string): Promise<User> => {
   try {
-    const user = await prisma.user.findUniqueOrThrow({
+    const user = await prisma.user.findFirst({
       where: { id },
     });
+
+    if (!user) {
+      const error = new Error('User not found');
+      throw error;
+    }
 
     return user;
   } catch (error) {
