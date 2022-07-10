@@ -1,13 +1,28 @@
 import { Transaction } from '@prisma/client';
+import { APIError } from '../../error/ApiError';
 import prisma from '../../utils/prisma';
 
-export const getWalletTransactions = async () => {
+export const getAllTransactions = async () => {
   try {
     const transactions = await prisma.transaction.findMany();
 
     return transactions;
   } catch (error) {
     throw new Error(error);
+  }
+};
+
+export const getOneTransaction = async (id: string) => {
+  try {
+    const transaction = await prisma.transaction.findFirstOrThrow({
+      where: {
+        id,
+      },
+    });
+
+    return transaction;
+  } catch (error) {
+    throw APIError.notFound('Transaction not found');
   }
 };
 

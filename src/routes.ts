@@ -36,5 +36,7 @@ router.post(
   requireAuth,
   transactionController.createTransaction
 );
+router.get('/transaction/', requireAuth, transactionController.getAllTransactions);
+router.get('/transaction/:id', requireAuth, transactionController.getOneTransaction);
 
 export default router;
