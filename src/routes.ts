@@ -1,27 +1,42 @@
 import { Router } from 'express';
 import requireAuth from './middlewares/requireAuth';
 import validate from './middlewares/validate';
-import { taskController, taskSchema } from './task';
-import { userController, userSchema } from './user';
+import { transactionController, transactionSchema } from './domains/transaction';
+import { userController, userSchema } from './domains/user';
+import { walletController, walletSchema } from './domains/wallet';
 
 const router = Router();
 
 // user routes
-router.get('/user/protected', requireAuth, userController.protectedRoute); // test route
 router.get('/user/me', requireAuth, userController.me);
 router.get('/user/logout', requireAuth, userController.logout);
 router.post('/user/login', validate(userSchema.loginSchema), userController.login);
 router.post('/user/signUp', validate(userSchema.signUpSchema), userController.signUp);
 
-// task routes
-router.get('/task/', requireAuth, taskController.getAllTasks);
-router.post(
-  '/task/create',
-  validate(taskSchema.taskSchema),
+// wallet routes
+router.get('/wallet/', requireAuth, walletController.getWallets);
+router.get('/wallet/:id', requireAuth, walletController.getWallet);
+router.put(
+  '/wallet/:id',
+  validate(walletSchema.updateWalletSchema),
   requireAuth,
-  taskController.createTask
+  walletController.updateWallet
 );
-router.put('/task/:id', validate(taskSchema.taskSchema), requireAuth, taskController.updateTask);
-router.delete('/task/:id', requireAuth, taskController.deleteTask);
+router.post(
+  '/wallet/create',
+  validate(walletSchema.createWalletSchema),
+  requireAuth,
+  walletController.createWallet
+);
+
+// transaction routes
+router.post(
+  '/transaction/create',
+  validate(transactionSchema.createTransactionSchema),
+  requireAuth,
+  transactionController.createTransaction
+);
+router.get('/transaction/', requireAuth, transactionController.getAllTransactions);
+router.get('/transaction/:id', requireAuth, transactionController.getOneTransaction);
 
 export default router;

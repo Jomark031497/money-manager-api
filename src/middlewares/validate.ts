@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { AnyZodObject } from 'zod';
+import { AnyZodObject, ZodError, ZodIssue } from 'zod';
 
 const validate =
   (schema: AnyZodObject) => async (req: Request, res: Response, next: NextFunction) => {
@@ -7,7 +7,15 @@ const validate =
       await schema.parseAsync(req.body);
       return next();
     } catch (error) {
-      return res.status(400).json(error.format());
+      if (error instanceof ZodError) {
+        return res.status(400).json(
+          error.flatten((issue: ZodIssue) => ({
+            message: issue.message,
+            errorCode: issue.code,
+          })).fieldErrors
+        );
+      }
+      return res.status(500).json({ error: 'something went wrong' });
     }
   };
 
