@@ -28,6 +28,7 @@ router.post(
   requireAuth,
   walletController.createWallet
 );
+router.delete('/wallet/:id', requireAuth, walletController.deleteWallet);
 
 // transaction routes
 router.post(

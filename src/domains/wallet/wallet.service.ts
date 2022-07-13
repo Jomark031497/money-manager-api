@@ -52,3 +52,17 @@ export const updateWallet = async (id: string, body: Wallet): Promise<Wallet> =>
     throw new Error(error);
   }
 };
+
+export const deleteWallet = async (id: string) => {
+  try {
+    const wallet = await prisma.wallet.delete({
+      where: {
+        id,
+      },
+    });
+
+    return wallet;
+  } catch (error) {
+    throw APIError.internal(error);
+  }
+};

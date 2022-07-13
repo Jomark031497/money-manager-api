@@ -38,7 +38,7 @@ model Transaction {
   id            String   @id @default(uuid())
   name          String
   type          String
-  amount        Int      @default(0)
+  amount        Float    @default(0)
   category      String
   paymentMethod String
   createdAt     DateTime @default(now())

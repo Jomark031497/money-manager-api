@@ -41,3 +41,14 @@ export const updateWallet = async (req: Request, res: Response) => {
     return res.json({ error: 'something went wrong' });
   }
 };
+
+export const deleteWallet = async (req: Request, res: Response) => {
+  try {
+    const wallet = await walletService.deleteWallet(req.params.id);
+
+    return res.status(200).json(wallet);
+  } catch (error) {
+    logger.error(error);
+    return res.status(error.code).json(error.message);
+  }
+};

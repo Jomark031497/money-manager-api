@@ -4,7 +4,15 @@ import prisma from '../../utils/prisma';
 
 export const getAllTransactions = async () => {
   try {
-    const transactions = await prisma.transaction.findMany();
+    const transactions = await prisma.transaction.findMany({
+      include: {
+        Wallet: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
 
     return transactions;
   } catch (error) {
