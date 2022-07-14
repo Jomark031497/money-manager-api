@@ -21,6 +21,9 @@ export const getWallets = async (userId: string): Promise<WalletWithTotal> => {
   try {
     const wallets = await prisma.wallet.findMany({
       where: { userId },
+      orderBy: {
+        name: 'asc',
+      },
     });
 
     return walletsWithTotal(wallets);
