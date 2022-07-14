@@ -22,6 +22,10 @@ export const me = async (id: string): Promise<User> => {
   try {
     const user = await prisma.user.findFirstOrThrow({
       where: { id },
+      include: {
+        wallets: true,
+        transactions: true,
+      },
     });
 
     return user;

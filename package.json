@@ -11,8 +11,8 @@
     "build:watch": "tsc -w",
     "prepare": "husky install",
     "lint": "eslint src/**/*.ts",
-    "prisma:migrate": "prisma migrate dev -n",
-    "prisma:studio": "prisma studio"
+    "migrate": "prisma migrate dev -n",
+    "studio": "prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",

@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { transactionService } from '.';
 import logger from '../../utils/logger';
 
-export const getAllTransactions = async (_req: Request, res: Response) => {
+export const getAllTransactions = async (req: Request, res: Response) => {
   try {
-    const transactions = await transactionService.getAllTransactions();
+    const transactions = await transactionService.getAllTransactions(req.session.userId!);
 
     return res.status(200).json(transactions);
   } catch (error) {
@@ -26,7 +26,7 @@ export const getOneTransaction = async (req: Request, res: Response) => {
 
 export const createTransaction = async (req: Request, res: Response) => {
   try {
-    const transaction = await transactionService.createTransaction(req.body);
+    const transaction = await transactionService.createTransaction(req.body, req.session.userId!);
 
     return res.status(200).json(transaction);
   } catch (error) {

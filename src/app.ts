@@ -17,8 +17,6 @@ declare module 'express-session' {
 const RedisStore = connectRedis(session);
 const redis = new Redis(<string>process.env.REDIS_URL);
 
-app.set('trust proxy', 1);
-
 app.use(express.json());
 app.use(
   cors({

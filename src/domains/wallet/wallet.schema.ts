@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const createWalletSchema = z.object({
   name: z.string().min(2).max(60),
-  balance: z.number().nonnegative(),
+  balance: z.number().optional(),
   color: z.string().optional(),
 });
 
