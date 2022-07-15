@@ -19,7 +19,6 @@ model User {
   updatedAt    DateTime      @updatedAt
   wallets      Wallet[]
   transactions Transaction[]
-
 }
 
 model Wallet {
