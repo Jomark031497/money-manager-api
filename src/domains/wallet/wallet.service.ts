@@ -13,7 +13,7 @@ export const createWallet = async (body: Wallet, userId: string): Promise<Wallet
     });
     return wallet;
   } catch (error) {
-    throw new Error(error);
+    throw APIError.internal('Unable to create wallet');
   }
 };
 
@@ -28,7 +28,7 @@ export const getWallets = async (userId: string): Promise<WalletWithTotal> => {
 
     return walletsWithTotal(wallets);
   } catch (error) {
-    throw new Error(error);
+    throw APIError.internal('Unable to get all wallets');
   }
 };
 
@@ -40,7 +40,7 @@ export const getWallet = async (id: string, userId: string): Promise<Wallet> => 
 
     return wallet;
   } catch (error) {
-    throw APIError.notFound('Wallet not found');
+    throw APIError.notFound('wallet not found');
   }
 };
 
@@ -52,7 +52,7 @@ export const updateWallet = async (id: string, body: Wallet): Promise<Wallet> =>
     });
     return wallet;
   } catch (error) {
-    throw new Error(error);
+    throw APIError.badRequest('unable to update wallet');
   }
 };
 
@@ -66,6 +66,6 @@ export const deleteWallet = async (id: string) => {
 
     return wallet;
   } catch (error) {
-    throw APIError.internal(error);
+    throw APIError.badRequest(error);
   }
 };

@@ -14,7 +14,7 @@ export const signUp = async (body: User): Promise<User> => {
 
     return user;
   } catch (error) {
-    throw new Error(error);
+    throw APIError.internal(error);
   }
 };
 

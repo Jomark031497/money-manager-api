@@ -6,6 +6,7 @@ export const getAllTransactions = async (req: Request, res: Response) => {
   try {
     const transactions = await transactionService.getAllTransactions(req.session.userId!);
 
+    logger.info('get transactions: success');
     return res.status(200).json(transactions);
   } catch (error) {
     logger.error(error);
@@ -17,6 +18,7 @@ export const getOneTransaction = async (req: Request, res: Response) => {
   try {
     const transaction = await transactionService.getOneTransaction(req.params.id);
 
+    logger.info('get one transaction: success');
     return res.status(200).json(transaction);
   } catch (error) {
     logger.error(error);
@@ -28,6 +30,7 @@ export const createTransaction = async (req: Request, res: Response) => {
   try {
     const transaction = await transactionService.createTransaction(req.body, req.session.userId!);
 
+    logger.info('create transaction: success');
     return res.status(200).json(transaction);
   } catch (error) {
     logger.error(error);

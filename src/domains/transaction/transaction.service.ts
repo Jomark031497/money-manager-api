@@ -23,7 +23,7 @@ export const getAllTransactions = async (userId: string) => {
 
     return transactionWithSummary(transactions);
   } catch (error) {
-    throw new Error(error);
+    throw APIError.badRequest(error);
   }
 };
 
@@ -47,7 +47,7 @@ export const createTransaction = async (inputs: Transaction, userId: string) => 
       data: {
         name: inputs.name,
         category: inputs.category,
-        type: inputs.type,
+        type: inputs.type.toLocaleLowerCase(),
         amount: inputs.amount,
         paymentMethod: inputs.paymentMethod,
         walletId: inputs.walletId,
