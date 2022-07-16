@@ -30,7 +30,7 @@ export const signUp = async (req: Request, res: Response) => {
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
@@ -49,7 +49,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
@@ -64,7 +64,7 @@ export const me = async (req: Request, res: Response) => {
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
-    return error;
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
@@ -82,6 +82,6 @@ export const logout = async (req: Request, res: Response) => {
     return res.status(200).json({ success: true });
   } catch (error) {
     logger.error(error);
-    throw error;
+    return res.status(error.code).json({ error: error.message });
   }
 };

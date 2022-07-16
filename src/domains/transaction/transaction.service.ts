@@ -1,9 +1,9 @@
 import { Transaction } from '@prisma/client';
 import { APIError } from '../../error/ApiError';
 import prisma from '../../utils/prisma';
-import { transactionWithSummary } from './helpers/transactionsWithSummary';
+import { TransactionWithSummary, transactionWithSummary } from './helpers/transactionsWithSummary';
 
-export const getAllTransactions = async (userId: string) => {
+export const getAllTransactions = async (userId: string): Promise<TransactionWithSummary> => {
   try {
     const transactions = await prisma.transaction.findMany({
       where: {
@@ -27,7 +27,7 @@ export const getAllTransactions = async (userId: string) => {
   }
 };
 
-export const getOneTransaction = async (id: string) => {
+export const getOneTransaction = async (id: string): Promise<Transaction> => {
   try {
     const transaction = await prisma.transaction.findFirstOrThrow({
       where: {
@@ -41,30 +41,21 @@ export const getOneTransaction = async (id: string) => {
   }
 };
 
-export const createTransaction = async (inputs: Transaction, userId: string) => {
+export const createTransaction = async (
+  body: Transaction,
+  userId: string
+): Promise<Transaction> => {
   try {
     const transaction = await prisma.transaction.create({
-      data: {
-        name: inputs.name,
-        category: inputs.category,
-        type: inputs.type.toLocaleLowerCase(),
-        amount: inputs.amount,
-        paymentMethod: inputs.paymentMethod,
-        walletId: inputs.walletId,
-        userId,
-      },
+      data: { ...body, userId },
     });
 
     const wallet = await prisma.wallet.findUniqueOrThrow({
-      where: {
-        id: transaction.walletId,
-      },
+      where: { id: transaction.walletId },
     });
 
     await prisma.wallet.update({
-      where: {
-        id: wallet.id,
-      },
+      where: { id: wallet.id },
       data: {
         balance:
           transaction.type === 'expense'
@@ -75,6 +66,20 @@ export const createTransaction = async (inputs: Transaction, userId: string) => 
 
     return transaction;
   } catch (error) {
-    throw new Error(error);
+    throw APIError.badRequest(error, 'no wallet id found');
+  }
+};
+
+export const updateTransaction = async (id: string, body: Transaction): Promise<Transaction> => {
+  try {
+    const transaction = await prisma.transaction.update({
+      where: { id },
+      data: {
+        ...body,
+      },
+    });
+    return transaction;
+  } catch (error) {
+    throw APIError.badRequest(error, 'unable to create transaction');
   }
 };

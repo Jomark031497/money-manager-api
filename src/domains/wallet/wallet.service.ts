@@ -52,7 +52,7 @@ export const updateWallet = async (id: string, body: Wallet): Promise<Wallet> =>
     });
     return wallet;
   } catch (error) {
-    throw APIError.badRequest('unable to update wallet');
+    throw APIError.badRequest(error);
   }
 };
 

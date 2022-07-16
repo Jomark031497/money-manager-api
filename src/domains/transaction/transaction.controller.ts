@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { transactionService } from '.';
 import logger from '../../utils/logger';
+import prisma from '../../utils/prisma';
 
 export const getAllTransactions = async (req: Request, res: Response) => {
   try {
@@ -34,6 +35,26 @@ export const createTransaction = async (req: Request, res: Response) => {
     return res.status(200).json(transaction);
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return res
+      .status(error.code)
+      .json({ error: error.message, helperMessage: error.helperMessage });
+  }
+};
+
+export const updateTransaction = async (req: Request, res: Response) => {
+  const transactionExists = await prisma.transaction.findUnique({
+    where: { id: req.params.id },
+  });
+  if (!transactionExists) return res.status(404).json({ error: 'transaction not found' });
+
+  try {
+    const transaction = await transactionService.updateTransaction(req.params.id, req.body);
+
+    return res.status(200).json(transaction);
+  } catch (error) {
+    logger.error(error);
+    return res
+      .status(error.code)
+      .json({ error: error.message, helperMessage: error.helperMessage });
   }
 };
