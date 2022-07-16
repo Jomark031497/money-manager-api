@@ -3,21 +3,24 @@ export class APIError extends Error {
 
   message!: string;
 
-  constructor(code: number, message: string) {
+  helperMessage?: string;
+
+  constructor(code: number, message: string, helperMessage?: string) {
     super();
     this.code = code;
     this.message = message;
+    if (helperMessage) this.helperMessage = helperMessage;
   }
 
-  static badRequest(message: string) {
-    return new APIError(400, message);
+  static badRequest(message: string, helperMessage?: string) {
+    return new APIError(400, message, helperMessage);
   }
 
-  static internal(message: string) {
-    return new APIError(500, message);
+  static internal(message: string, helperMessage?: string) {
+    return new APIError(500, message, helperMessage);
   }
 
-  static notFound(message: string) {
-    return new APIError(404, message);
+  static notFound(message: string, helperMessage?: string) {
+    return new APIError(404, message, helperMessage);
   }
 }

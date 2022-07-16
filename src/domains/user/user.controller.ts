@@ -25,10 +25,12 @@ export const signUp = async (req: Request, res: Response) => {
   try {
     const user = await userService.signUp(req.body);
     req.session.userId = user.id;
+
+    logger.info('sign up: success');
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
@@ -43,10 +45,11 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     req.session.userId = user.id;
+    logger.info('login: success');
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
@@ -56,10 +59,12 @@ export const me = async (req: Request, res: Response) => {
   try {
     const user = await userService.me(req.session.userId);
     if (!user) return res.status(401).json({ error: 'unauthorized' });
+
+    logger.info('user: authenticated');
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
-    return error;
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
@@ -73,9 +78,10 @@ export const logout = async (req: Request, res: Response) => {
       return null;
     });
 
+    logger.info('logout: success');
     return res.status(200).json({ success: true });
   } catch (error) {
     logger.error(error);
-    throw error;
+    return res.status(error.code).json({ error: error.message });
   }
 };
