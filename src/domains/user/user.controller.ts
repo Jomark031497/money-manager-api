@@ -38,10 +38,10 @@ export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) return res.status(400).json({ error: 'invalid username/password' });
+  if (!user) return res.status(400).json({ username: 'username not found' });
 
   const passwordMatched = await verify(user.password, password);
-  if (!passwordMatched) return res.status(400).json({ error: 'invalid username/password' });
+  if (!passwordMatched) return res.status(400).json({ password: 'invalid password' });
 
   try {
     req.session.userId = user.id;
