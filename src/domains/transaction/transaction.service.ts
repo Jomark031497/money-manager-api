@@ -1,9 +1,8 @@
 import { Transaction } from '@prisma/client';
 import { APIError } from '../../error/ApiError';
 import prisma from '../../utils/prisma';
-import { TransactionWithSummary, transactionWithSummary } from './helpers/transactionsWithSummary';
 
-export const getAllTransactions = async (userId: string): Promise<TransactionWithSummary> => {
+export const getAllTransactions = async (userId: string): Promise<Transaction[]> => {
   try {
     const transactions = await prisma.transaction.findMany({
       where: {
@@ -21,7 +20,7 @@ export const getAllTransactions = async (userId: string): Promise<TransactionWit
       },
     });
 
-    return transactionWithSummary(transactions);
+    return transactions;
   } catch (error) {
     throw APIError.badRequest(error);
   }
@@ -50,20 +49,6 @@ export const createTransaction = async (
       data: { ...body, userId },
     });
 
-    const wallet = await prisma.wallet.findUniqueOrThrow({
-      where: { id: transaction.walletId },
-    });
-
-    await prisma.wallet.update({
-      where: { id: wallet.id },
-      data: {
-        balance:
-          transaction.type === 'expense'
-            ? wallet.balance - transaction.amount
-            : wallet.balance + transaction.amount,
-      },
-    });
-
     return transaction;
   } catch (error) {
     throw APIError.badRequest(error, 'no wallet id found');
@@ -81,5 +66,17 @@ export const updateTransaction = async (id: string, body: Transaction): Promise<
     return transaction;
   } catch (error) {
     throw APIError.badRequest(error, 'unable to create transaction');
+  }
+};
+
+export const deleteTransaction = async (id: string): Promise<Transaction> => {
+  try {
+    const transaction = await prisma.transaction.delete({
+      where: { id },
+    });
+
+    return transaction;
+  } catch (error) {
+    throw APIError.badRequest(error, 'unable to delete transaction');
   }
 };

@@ -23,7 +23,7 @@ export const getOneTransaction = async (req: Request, res: Response) => {
     return res.status(200).json(transaction);
   } catch (error) {
     logger.error(error);
-    return res.status(error.code).json(error.message);
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
@@ -49,6 +49,24 @@ export const updateTransaction = async (req: Request, res: Response) => {
 
   try {
     const transaction = await transactionService.updateTransaction(req.params.id, req.body);
+
+    return res.status(200).json(transaction);
+  } catch (error) {
+    logger.error(error);
+    return res
+      .status(error.code)
+      .json({ error: error.message, helperMessage: error.helperMessage });
+  }
+};
+
+export const deleteTransaction = async (req: Request, res: Response) => {
+  const transactionExists = await prisma.transaction.findUnique({
+    where: { id: req.params.id },
+  });
+  if (!transactionExists) return res.status(404).json({ error: 'transaction not found' });
+
+  try {
+    const transaction = await transactionService.deleteTransaction(req.params.id);
 
     return res.status(200).json(transaction);
   } catch (error) {

@@ -7,6 +7,5 @@ export const createWalletSchema = z.object({
 
 export const updateWalletSchema = z.object({
   name: z.string().min(2).max(60).optional(),
-  balance: z.number().nonnegative().optional(),
   color: z.string().optional(),
 });
