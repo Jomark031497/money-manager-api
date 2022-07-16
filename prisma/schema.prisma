@@ -11,21 +11,20 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  wallets   Wallet[]
-
+  id           String        @id @default(uuid())
+  email        String        @unique
+  username     String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  wallets      Wallet[]
+  transactions Transaction[]
 }
 
 model Wallet {
   id           String        @id @default(uuid())
   name         String
   color        String?
-  balance      Float         @default(0)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   User         User          @relation(fields: [userId], references: [id])
@@ -38,11 +37,13 @@ model Transaction {
   id            String   @id @default(uuid())
   name          String
   type          String
-  amount        Int      @default(0)
+  amount        Float    @default(0)
   category      String
   paymentMethod String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   Wallet        Wallet   @relation(fields: [walletId], references: [id])
   walletId      String
+  User          User     @relation(fields: [userId], references: [id])
+  userId        String
 }

@@ -1,5 +1,6 @@
 import { User } from '@prisma/client';
 import { hash } from 'argon2';
+import { APIError } from '../../error/ApiError';
 import prisma from '../../utils/prisma';
 
 export const signUp = async (body: User): Promise<User> => {
@@ -13,23 +14,18 @@ export const signUp = async (body: User): Promise<User> => {
 
     return user;
   } catch (error) {
-    throw new Error(error);
+    throw APIError.internal(error);
   }
 };
 
 export const me = async (id: string): Promise<User> => {
   try {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findFirstOrThrow({
       where: { id },
     });
 
-    if (!user) {
-      const error = new Error('User not found');
-      throw error;
-    }
-
     return user;
   } catch (error) {
-    throw new Error(error);
+    throw APIError.notFound('User not found');
   }
 };

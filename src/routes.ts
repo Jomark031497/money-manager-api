@@ -1,42 +1,12 @@
 import { Router } from 'express';
-import requireAuth from './middlewares/requireAuth';
-import validate from './middlewares/validate';
-import { transactionController, transactionSchema } from './domains/transaction';
-import { userController, userSchema } from './domains/user';
-import { walletController, walletSchema } from './domains/wallet';
+import userRoute from './domains/user/user.route';
+import walletRoute from './domains/wallet/wallet.route';
+import transactionRoute from './domains/transaction/transaction.route';
 
 const router = Router();
 
-// user routes
-router.get('/user/me', requireAuth, userController.me);
-router.get('/user/logout', requireAuth, userController.logout);
-router.post('/user/login', validate(userSchema.loginSchema), userController.login);
-router.post('/user/signUp', validate(userSchema.signUpSchema), userController.signUp);
-
-// wallet routes
-router.get('/wallet/', requireAuth, walletController.getWallets);
-router.get('/wallet/:id', requireAuth, walletController.getWallet);
-router.put(
-  '/wallet/:id',
-  validate(walletSchema.updateWalletSchema),
-  requireAuth,
-  walletController.updateWallet
-);
-router.post(
-  '/wallet/create',
-  validate(walletSchema.createWalletSchema),
-  requireAuth,
-  walletController.createWallet
-);
-
-// transaction routes
-router.post(
-  '/transaction/create',
-  validate(transactionSchema.createTransactionSchema),
-  requireAuth,
-  transactionController.createTransaction
-);
-router.get('/transaction/', requireAuth, transactionController.getAllTransactions);
-router.get('/transaction/:id', requireAuth, transactionController.getOneTransaction);
+router.use(userRoute);
+router.use(walletRoute);
+router.use(transactionRoute);
 
 export default router;
