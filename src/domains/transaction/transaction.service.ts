@@ -2,22 +2,24 @@ import { Transaction } from '@prisma/client';
 import { APIError } from '../../error/ApiError';
 import prisma from '../../utils/prisma';
 
-export const getAllTransactions = async (userId: string): Promise<Transaction[]> => {
+export const getAllTransactions = async (
+  userId: string,
+  take?: number | undefined,
+  skip?: number | undefined
+): Promise<Transaction[]> => {
   try {
     const transactions = await prisma.transaction.findMany({
-      where: {
-        userId,
-      },
+      where: { userId },
       include: {
         Wallet: {
-          select: {
-            name: true,
-          },
+          select: { name: true },
         },
       },
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take,
     });
 
     return transactions;
