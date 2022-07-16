@@ -6,4 +6,6 @@ export const createTransactionSchema = z.object({
   amount: z.number(),
   category: z.string().min(1).max(60),
   paymentMethod: z.string().min(1).max(60),
+  date: z.string(),
+  note: z.string().optional(),
 });

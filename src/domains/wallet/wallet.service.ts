@@ -32,7 +32,7 @@ export const getWallet = async (id: string, userId: string): Promise<WalletWithT
   }
 };
 
-export const getWallets = async (userId: string): Promise<WalletWithTotal[]> => {
+export const getWallets = async (userId: string) => {
   try {
     const wallets = await prisma.wallet.findMany({
       where: { userId },
@@ -42,7 +42,11 @@ export const getWallets = async (userId: string): Promise<WalletWithTotal[]> => 
 
     const walletsWithTotal = wallets.map((wallet) => walletWithTotal(wallet));
 
-    return walletsWithTotal;
+    const balance = walletsWithTotal.reduce((prev, curr) => prev + curr.total.balance, 0);
+    const expense = walletsWithTotal.reduce((prev, curr) => prev + curr.total.expense, 0);
+    const income = walletsWithTotal.reduce((prev, curr) => prev + curr.total.income, 0);
+
+    return { wallets: walletsWithTotal, balance, expense, income };
   } catch (error) {
     throw APIError.internal('Unable to get all wallets');
   }

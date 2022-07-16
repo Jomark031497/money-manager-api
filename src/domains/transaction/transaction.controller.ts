@@ -4,14 +4,21 @@ import logger from '../../utils/logger';
 import prisma from '../../utils/prisma';
 
 export const getAllTransactions = async (req: Request, res: Response) => {
+  const skip = Number(req.query.skip) * 5 || undefined;
+  const take = Number(req.query.take) || undefined;
+
   try {
-    const transactions = await transactionService.getAllTransactions(req.session.userId!);
+    const transactions = await transactionService.getAllTransactions(
+      req.session.userId!,
+      take,
+      skip
+    );
 
     logger.info('get transactions: success');
     return res.status(200).json(transactions);
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ error: 'something went wrong' });
+    return res.status(error.code).json({ error: error.message });
   }
 };
 
