@@ -1,6 +1,5 @@
-import { verify } from 'argon2';
 import { Request, Response } from 'express';
-import { omitPassword, userSchema, userService } from '.';
+import { userSchema, userService } from '.';
 import logger from '../../utils/logger';
 import prisma from '../../utils/prisma';
 import { zParse } from '../../utils/zParse';
@@ -24,29 +23,9 @@ export const signUp = async (req: Request, res: Response) => {
 
   try {
     const user = await userService.signUp(req.body);
-    req.session.userId = user.id;
 
     logger.info('sign up: success');
-    return res.status(200).json(omitPassword(user));
-  } catch (error) {
-    logger.error(error);
-    return res.status(error.code).json({ error: error.message });
-  }
-};
-
-export const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-
-  const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) return res.status(400).json({ username: 'username not found' });
-
-  const passwordMatched = await verify(user.password, password);
-  if (!passwordMatched) return res.status(400).json({ password: 'invalid password' });
-
-  try {
-    req.session.userId = user.id;
-    logger.info('login: success');
-    return res.status(200).json(omitPassword(user));
+    return res.status(200).json(user);
   } catch (error) {
     logger.error(error);
     return res.status(error.code).json({ error: error.message });
@@ -54,14 +33,11 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const me = async (req: Request, res: Response) => {
-  if (!req.session.userId) return res.status(401).json({ error: 'unauthorized' });
-
   try {
-    const user = await userService.me(req.session.userId);
-    if (!user) return res.status(401).json({ error: 'unauthorized' });
+    if (!req.user) return res.status(401).json({ error: 'unauthenticated' });
 
     logger.info('user: authenticated');
-    return res.status(200).json(omitPassword(user));
+    return res.status(200).json(req.user);
   } catch (error) {
     logger.error(error);
     return res.status(error.code).json({ error: error.message });
@@ -69,19 +45,16 @@ export const me = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  if (!req.session.userId) return res.status(401).json({ error: 'unauthorized' });
-
   try {
-    req.session.destroy((err) => {
-      if (err) return res.status(500).json(err);
+    req.logout((err) => {
+      if (err) return res.status(400).json(err);
 
       return null;
     });
-
     logger.info('logout: success');
     return res.status(200).json({ success: true });
   } catch (error) {
     logger.error(error);
-    return res.status(error.code).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
