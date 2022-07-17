@@ -5,6 +5,7 @@ import transactionRoute from './domains/transaction/transaction.route';
 
 const router = Router();
 
+router.get('/', (_req, res) => res.send('Sample API: working'));
 router.use(userRoute);
 router.use(walletRoute);
 router.use(transactionRoute);
