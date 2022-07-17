@@ -3,9 +3,9 @@ import session from 'express-session';
 import cors from 'cors';
 import passport from 'passport';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
-import { PrismaClient } from '@prisma/client';
 import router from './routes';
 import authenticate from './config/passport.config';
+import prisma from './utils/prisma';
 
 declare module 'express-session' {
   // eslint-disable-next-line no-unused-vars
@@ -17,8 +17,6 @@ declare module 'express-session' {
 }
 
 const app = express();
-
-app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(
@@ -33,7 +31,7 @@ app.use(
     secret: <string>process.env.SECRET,
     saveUninitialized: true, // won't save if {} is empty
     resave: false, // wont save session if it's not modified?
-    store: new PrismaSessionStore(new PrismaClient(), {
+    store: new PrismaSessionStore(prisma, {
       checkPeriod: 2 * 60 * 1000, // ms
       dbRecordIdIsSessionId: true,
       dbRecordIdFunction: undefined,
