@@ -43,7 +43,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
       secure: __prod__, // cookie only works in https
-      sameSite: __prod__, // csrf
+      sameSite: 'none', // csrf
     },
   })
 );
