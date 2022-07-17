@@ -6,7 +6,6 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import router from './routes';
 import authenticate from './config/passport.config';
 import prisma from './utils/prisma';
-import { __prod__ } from './constants';
 
 declare module 'express-session' {
   // eslint-disable-next-line no-unused-vars
