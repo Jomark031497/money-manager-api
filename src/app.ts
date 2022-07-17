@@ -14,6 +14,8 @@ declare module 'express-session' {
   }
 }
 
+app.set('trust proxy', 1);
+
 const RedisStore = connectRedis(session);
 const redis = new Redis(<string>process.env.REDIS_URL);
 
@@ -28,14 +30,16 @@ app.use(
   session({
     name: 'qid',
     secret: <string>process.env.SECRET,
-    saveUninitialized: true, // won't save if {} is empty
-    resave: true, // wont save session if it's not modified?
+    saveUninitialized: false, // won't save if {} is empty
+    resave: false, // wont save session if it's not modified?
     store: new RedisStore({
       client: redis,
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
+      secure: true,
+      sameSite: 'none',
     },
   })
 );
