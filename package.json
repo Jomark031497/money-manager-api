@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .ts",
     "migrate": "prisma migrate dev -n",
     "studio": "prisma studio",
-    "heroku-postbuild": "yarn prisma migrate deploy"
+    "heroku-postbuild": "yarn prisma migrate deploy && yarn build"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
