@@ -8,6 +8,15 @@ import authenticate from './config/passport.config';
 import prisma from './utils/prisma';
 import { __prod__ } from './constants';
 
+declare module 'express-session' {
+  // eslint-disable-next-line no-unused-vars
+  interface SessionData {
+    passport: {
+      user: string;
+    };
+  }
+}
+
 const app = express();
 
 app.set('trust proxy', 1);

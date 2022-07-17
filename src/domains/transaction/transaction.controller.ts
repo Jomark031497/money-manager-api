@@ -7,12 +7,10 @@ export const getAllTransactions = async (req: Request, res: Response) => {
   const skip = Number(req.query.skip) * 5 || undefined;
   const take = Number(req.query.take) || undefined;
 
+  const userId = req.session.passport!.user;
+
   try {
-    const transactions = await transactionService.getAllTransactions(
-      req.session.userId!,
-      take,
-      skip
-    );
+    const transactions = await transactionService.getAllTransactions(userId, take, skip);
 
     logger.info('get transactions: success');
     return res.status(200).json(transactions);
@@ -35,8 +33,10 @@ export const getOneTransaction = async (req: Request, res: Response) => {
 };
 
 export const createTransaction = async (req: Request, res: Response) => {
+  const userId = req.session.passport!.user;
+
   try {
-    const transaction = await transactionService.createTransaction(req.body, req.session.userId!);
+    const transaction = await transactionService.createTransaction(req.body, userId);
 
     logger.info('create transaction: success');
     return res.status(200).json(transaction);

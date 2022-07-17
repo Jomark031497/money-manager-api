@@ -1,6 +1,4 @@
-import { User } from '@prisma/client';
-
-const omitPassword = (user: User) => {
+const omitPassword = (user: any) => {
   const { password, ...rest } = user;
 
   return rest;
