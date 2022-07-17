@@ -30,7 +30,7 @@ app.use(
   session({
     name: 'qidfavreau',
     secret: <string>process.env.SECRET,
-    saveUninitialized: true, // won't save if {} is empty
+    saveUninitialized: false, // won't save if {} is empty
     resave: false, // wont save session if it's not modified?
     store: new PrismaSessionStore(prisma, {
       checkPeriod: 2 * 60 * 1000, // ms
@@ -40,8 +40,6 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
-      secure: __prod__, // cookie only works in https
-      sameSite: 'none', // csrf
     },
   })
 );
