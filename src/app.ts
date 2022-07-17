@@ -6,6 +6,7 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import router from './routes';
 import authenticate from './config/passport.config';
 import prisma from './utils/prisma';
+import { __prod__ } from './constants';
 
 declare module 'express-session' {
   // eslint-disable-next-line no-unused-vars
@@ -39,8 +40,8 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
-      // secure: __prod__, // cookie only works in https
-      // sameSite: 'none', // csrf
+      secure: __prod__, // cookie only works in https
+      sameSite: 'none', // csrf
     },
   })
 );
