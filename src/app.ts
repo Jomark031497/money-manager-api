@@ -32,11 +32,12 @@ app.use(
     resave: false,
     store: new RedisStore({
       client: redis,
+      disableTouch: true,
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
-      // sameSite: 'lax',
+      sameSite: 'lax',
       // secure: true,
     },
   })
