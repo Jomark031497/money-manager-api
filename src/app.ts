@@ -28,17 +28,14 @@ app.use(
   session({
     name: 'qid',
     secret: <string>process.env.SECRET,
-    saveUninitialized: false,
-    resave: false,
+    saveUninitialized: false, // won't save if {} is empty
+    resave: false, // wont save session if it's not modified?
     store: new RedisStore({
       client: redis,
-      disableTouch: true,
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
     },
   })
 );
