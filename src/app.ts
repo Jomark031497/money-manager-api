@@ -19,6 +19,8 @@ declare module 'express-session' {
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(express.json());
 app.use(
   cors({
@@ -41,7 +43,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
       secure: __prod__, // cookie only works in https
-      sameSite: 'lax', // csrf
+      sameSite: 'none', // csrf
     },
   })
 );
