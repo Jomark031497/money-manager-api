@@ -1,4 +1,6 @@
+import { verify } from 'argon2';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { omitPassword, userSchema, userService } from '.';
 import logger from '../../utils/logger';
 import prisma from '../../utils/prisma';
@@ -10,7 +12,37 @@ type Error = {
   password?: string;
 };
 
-export const signUp = async (req: Request, res: Response) => {
+export const loginHandler = async (req: Request, res: Response) => {
+  const { username, password } = await zParse(userSchema.loginSchema, req.body);
+
+  const user = await prisma.user.findUnique({ where: { username } });
+
+  if (!user) return res.status(404).json({ error: 'invalid username/password' });
+
+  try {
+    const verified = await verify(user.password, password);
+
+    if (!verified) return res.status(400).json({ error: 'invalid username/password ' });
+
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET!);
+
+    res.cookie('accessToken', accessToken, {
+      maxAge: 60 * 60 * 24,
+      httpOnly: true,
+      domain: 'localhost',
+      path: '/',
+      sameSite: 'lax',
+      secure: false,
+    });
+
+    return res.status(200).json(omitPassword(user));
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).json({ error: 'something went wrong' });
+  }
+};
+
+export const registerHandler = async (req: Request, res: Response) => {
   const { username, email } = await zParse(userSchema.signUpSchema, req.body);
   const errors: Error = {};
 
@@ -31,25 +63,24 @@ export const signUp = async (req: Request, res: Response) => {
   }
 };
 
-export const me = async (req: Request, res: Response) => {
+export const meHandler = async (_req: Request, res: Response) => {
   try {
-    if (!req.user) return res.status(401).json({ error: 'unauthenticated' });
-
-    logger.info('user: authenticated');
-    return res.status(200).json(omitPassword(req.user));
+    return res.status(200).json(omitPassword(res.locals.user));
   } catch (error) {
     logger.error(error);
     return res.status(error.code).json({ error: error.message });
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const logoutHandler = async (_req: Request, res: Response) => {
   try {
-    req.logout((err) => {
-      if (err) return res.status(400).json(err);
-      return null;
+    if (!res.locals.user) return res.status(401).json({ error: 'unauthorized' });
+
+    res.cookie('accessToken', null, {
+      maxAge: 0,
+      httpOnly: true,
     });
-    logger.info('logout: success');
+
     return res.status(200).json({ success: true });
   } catch (error) {
     logger.error(error);
