@@ -31,10 +31,9 @@ export const loginHandler = async (req: Request, res: Response) => {
     res.cookie('accessToken', accessToken, {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
-      domain: 'localhost',
       path: '/',
-      sameSite: 'lax',
-      secure: false,
+      sameSite: 'none',
+      secure: true,
     });
 
     return res.status(200).json(omitPassword(user));
