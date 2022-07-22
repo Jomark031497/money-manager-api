@@ -26,8 +26,10 @@ export const loginHandler = async (req: Request, res: Response) => {
 
     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET!);
 
+    logger.info('login: success');
+
     res.cookie('accessToken', accessToken, {
-      maxAge: 60 * 60 * 24,
+      maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       domain: 'localhost',
       path: '/',

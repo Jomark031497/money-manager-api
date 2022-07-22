@@ -4,10 +4,10 @@ import logger from '../../utils/logger';
 import prisma from '../../utils/prisma';
 
 export const createWallet = async (req: Request, res: Response) => {
-  const userId = req.session.passport!.user;
+  const { id } = res.locals.user;
 
   try {
-    const wallet = await walletService.createWallet(req.body, userId);
+    const wallet = await walletService.createWallet(req.body, id);
 
     logger.info('create wallet: success');
     return res.status(200).json(wallet);
@@ -17,10 +17,10 @@ export const createWallet = async (req: Request, res: Response) => {
   }
 };
 
-export const getWallets = async (req: Request, res: Response) => {
-  const userId = req.session.passport!.user;
+export const getWallets = async (_req: Request, res: Response) => {
+  const { id } = res.locals.user;
   try {
-    const wallets = await walletService.getWallets(userId);
+    const wallets = await walletService.getWallets(id);
 
     logger.info('get wallets: success');
     return res.status(200).json(wallets);
@@ -31,10 +31,10 @@ export const getWallets = async (req: Request, res: Response) => {
 };
 
 export const getWallet = async (req: Request, res: Response) => {
-  const userId = req.session.passport!.user;
+  const { id } = res.locals.user;
 
   try {
-    const wallet = await walletService.getWallet(req.params.id, userId);
+    const wallet = await walletService.getWallet(req.params.id, id);
 
     logger.info('get single wallet: success');
     return res.status(200).json(wallet);
