@@ -3,15 +3,6 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import router from './routes';
 
-declare module 'express-session' {
-  // eslint-disable-next-line no-unused-vars
-  interface SessionData {
-    passport: {
-      user: string;
-    };
-  }
-}
-
 const app = express();
 
 app.set('trust proxy', 1);
