@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node dist/app.js",
     "dev": "nodemon dist/app.js",
-    "watch": "rm -rf dist && tsc -w"
+    "watch": "rm -rf dist && tsc -w",
+    "prepare": "husky install",
+    "lint": "eslint . --ext .ts"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
