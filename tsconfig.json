@@ -21,6 +21,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
+    "strict":true,
+    "forceConsistentCasingInFileNames": true,
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
   "exclude": ["node_modules"],

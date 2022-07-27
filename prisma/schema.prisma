@@ -30,7 +30,6 @@ model Wallet {
   User         User          @relation(fields: [userId], references: [id])
   userId       String
   transactions Transaction[]
-
 }
 
 model Transaction {
@@ -48,11 +47,4 @@ model Transaction {
   walletId      String
   User          User     @relation(fields: [userId], references: [id])
   userId        String
-}
-
-model Session {
-  id        String   @id
-  sid       String   @unique
-  data      String
-  expiresAt DateTime
 }
