@@ -1,6 +1,7 @@
 import { hash } from 'argon2';
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
+import { omitPassword } from '../utils/helpers/user.helpers';
 import logger from '../utils/logger';
 import prisma from '../utils/prisma';
 
@@ -33,7 +34,7 @@ export const createUserHandler = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
     return res.status(500).json({ error: 'something went wrong' });
@@ -49,7 +50,7 @@ export const loginUserHandler = async (req: Request, res: Response, next: NextFu
       return req.logIn(user, (error: Error) => {
         if (error) return next(error);
 
-        res.status(200).json(user);
+        res.status(200).json(omitPassword(user));
         return next();
       });
     } catch (error) {
@@ -61,7 +62,7 @@ export const loginUserHandler = async (req: Request, res: Response, next: NextFu
 
 export const currentUserHandler = async (req: Request, res: Response) => {
   try {
-    return res.status(200).json(req.user);
+    return res.status(200).json(omitPassword(req.user!));
   } catch (error) {
     logger.error(error);
     return res.status(500).json({ error: 'something went wrong' });

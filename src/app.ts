@@ -6,6 +6,7 @@ import { User as PrismaUser } from '@prisma/client';
 import prisma from './utils/prisma';
 import logger from './utils/logger';
 import userRoutes from './routes/user.routes';
+import walletRoutes from './routes/wallets.routes';
 import authenticate from './configs/passport.config';
 
 declare global {
@@ -39,6 +40,7 @@ const main = async () => {
   authenticate(passport);
 
   app.use('/api/users', userRoutes);
+  app.use('/api/wallets', walletRoutes);
 
   app.listen(port, () => {
     logger.info(`app started at http://localhost:${port}`);
