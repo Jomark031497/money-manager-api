@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import session from 'express-session';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import { User as PrismaUser } from '@prisma/client';
 import cors from 'cors';
 import prisma from './utils/prisma';
@@ -25,6 +26,7 @@ const main = async () => {
   const port = process.env.PORT || 8080;
 
   app.use(express.json());
+  app.use(cookieParser(<string>process.env.SECRET));
   app.use(
     cors({
       origin: <string>process.env.CLIENT_URL,
@@ -33,9 +35,14 @@ const main = async () => {
   );
   app.use(
     session({
+      name: 'qid',
       secret: <string>process.env.SECRET,
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+      },
     })
   );
   app.use(passport.initialize());
