@@ -26,7 +26,7 @@ const main = async () => {
   const port = process.env.PORT || 8080;
 
   app.use(express.json());
-  app.use(cookieParser(<string>process.env.SECRET));
+  app.use(express.urlencoded({ extended: false }));
   app.use(
     cors({
       origin: <string>process.env.CLIENT_URL,
@@ -35,16 +35,12 @@ const main = async () => {
   );
   app.use(
     session({
-      name: 'qid',
       secret: <string>process.env.SECRET,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-      },
+      resave: true,
+      saveUninitialized: true,
     })
   );
+  app.use(cookieParser(<string>process.env.SECRET));
   app.use(passport.initialize());
   app.use(passport.session());
   authenticate(passport);
