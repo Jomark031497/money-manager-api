@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import z from 'zod';
 
-export const signUpSchema = z.object({
+export const createUserSchema = z.object({
   username: z.string().min(4, 'username must be at least 4 characters long').max(255),
   email: z.string().min(4, 'email must be at least 4 characters long').max(255).email(),
   password: z
@@ -9,7 +9,7 @@ export const signUpSchema = z.object({
     .max(60, 'password must not exceed 60 characters long'),
 });
 
-export const loginSchema = z.object({
+export const loginUserSchema = z.object({
   username: z.string().min(4, 'username must be at least 4 characters long').max(255),
   password: z
     .string()

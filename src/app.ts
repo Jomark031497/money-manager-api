@@ -1,55 +1,67 @@
 import express from 'express';
+import 'dotenv/config';
 import session from 'express-session';
-import cors from 'cors';
 import passport from 'passport';
-import { PrismaSessionStore } from '@quixo3/prisma-session-store';
-import { PrismaClient } from '@prisma/client';
-import router from './routes';
-import authenticate from './config/passport.config';
+import { User as PrismaUser } from '@prisma/client';
+import cors from 'cors';
+import prisma from './utils/prisma';
+import logger from './utils/logger';
+import userRoutes from './routes/user.routes';
+import walletRoutes from './routes/wallet.routes';
+import transactionRoutes from './routes/transaction.routes';
+import authenticate from './configs/passport.config';
 
-declare module 'express-session' {
+declare global {
   // eslint-disable-next-line no-unused-vars
-  interface SessionData {
-    passport: {
-      user: string;
-    };
+  namespace Express {
+    // eslint-disable-next-line no-unused-vars
+    interface User extends PrismaUser {}
   }
 }
 
-const app = express();
+const main = async () => {
+  const app = express();
 
-app.set('trust proxy', 1);
+  const port = process.env.PORT || 8080;
 
-app.use(express.json());
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.CLIENT_URL,
+  app.use(express.json());
+  app.use(
+    cors({
+      origin: <string>process.env.CLIENT_URL,
+      credentials: true,
+    })
+  );
+  app.use(
+    session({
+      name: 'qid',
+      secret: <string>process.env.SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+  authenticate(passport);
+
+  app.use('/api/users', userRoutes);
+  app.use('/api/wallets', walletRoutes);
+  app.use('/api/transactions', transactionRoutes);
+
+  app.listen(port, () => {
+    logger.info(`app started at http://localhost:${port}`);
+  });
+};
+
+main()
+  .catch((error) => {
+    logger.error(error);
   })
-);
-app.use(
-  session({
-    name: 'qidfavreau',
-    secret: <string>process.env.SECRET,
-    saveUninitialized: true, // won't save if {} is empty
-    resave: false, // wont save session if it's not modified?
-    store: new PrismaSessionStore(new PrismaClient(), {
-      checkPeriod: 2 * 60 * 1000, // ms
-      dbRecordIdIsSessionId: true,
-      dbRecordIdFunction: undefined,
-    }),
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-      httpOnly: true,
-      // secure: __prod__, // cookie only works in https
-      // sameSite: 'none', // csrf
-    },
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-authenticate(passport);
-
-app.use('/api', router);
-
-export default app;
+  .finally(async () => {
+    prisma.$disconnect();
+  });
