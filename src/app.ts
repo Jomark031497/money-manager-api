@@ -33,16 +33,9 @@ const main = async () => {
   );
   app.use(
     session({
-      name: 'qid',
       secret: <string>process.env.SECRET,
       resave: false,
       saveUninitialized: false,
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
-      },
     })
   );
   app.use(passport.initialize());
