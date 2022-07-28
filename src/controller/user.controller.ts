@@ -33,7 +33,7 @@ export const createUserHandler = async (req: Request, res: Response) => {
         password: hashedPassword,
       },
     });
-
+    logger.info('register successful');
     return res.status(200).json(omitPassword(user));
   } catch (error) {
     logger.error(error);
