@@ -8,7 +8,8 @@
     "dev": "nodemon dist/app.js",
     "watch": "rm -rf dist && tsc -w",
     "prepare": "husky install",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "build": "tsc"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
