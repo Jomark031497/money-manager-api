@@ -49,6 +49,7 @@ const main = async () => {
   app.use(passport.session());
   authenticate(passport);
 
+  app.get('/api', (_req, res) => res.sendStatus(200));
   app.use('/api/users', userRoutes);
   app.use('/api/wallets', walletRoutes);
   app.use('/api/transactions', transactionRoutes);
