@@ -5,7 +5,7 @@ import {
   getWalletHandler,
   getWalletsHandler,
   updateWalletHandler,
-} from '../controller/wallets.controller';
+} from '../controller/wallet.controller';
 import requireAuth from '../middlewares/requireAuth';
 import validate from '../middlewares/validate';
 import { createWalletSchema, updateWalletSchema } from '../schema/wallet.schema';
