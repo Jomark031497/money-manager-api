@@ -23,6 +23,7 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pino": "^8.3.0",
+    "pino-pretty": "^8.1.0",
     "zod": "^3.17.3"
   },
   "devDependencies": {
@@ -42,7 +43,6 @@
     "eslint-plugin-import": "^2.25.2",
     "husky": "^8.0.1",
     "nodemon": "^2.0.18",
-    "pino-pretty": "^8.1.0",
     "prettier": "^2.7.1",
     "prisma": "^4.0.0",
     "ts-node": "^10.9.1",
