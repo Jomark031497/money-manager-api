@@ -3,6 +3,7 @@ import 'dotenv/config';
 import session from 'express-session';
 import passport from 'passport';
 import { User as PrismaUser } from '@prisma/client';
+import cors from 'cors';
 import prisma from './utils/prisma';
 import logger from './utils/logger';
 import userRoutes from './routes/user.routes';
@@ -25,6 +26,12 @@ const main = async () => {
 
   app.use(express.json());
   app.use(
+    cors({
+      origin: <string>process.env.CLIENT_URL,
+      credentials: true,
+    })
+  );
+  app.use(
     session({
       name: 'qid',
       secret: <string>process.env.SECRET,
@@ -33,6 +40,8 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
       },
     })
   );
